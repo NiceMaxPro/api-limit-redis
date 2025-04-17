@@ -3,9 +3,9 @@ spring:
     name: common
   data:
     redis:
-      host: 1.95.47.33
+      host:
       port: 6379
-      password: 123456
+      password:
       lettuce:
         pool:
           max-active: 10

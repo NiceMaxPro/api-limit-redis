@@ -13,6 +13,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Component;
+
+import java.net.InetAddress;
 import java.util.Collections;
 
 @Aspect
@@ -40,12 +42,14 @@ public class IpLimiterHandler {
         // 检查注解是否应用在方法上
         Signature signature = proceedingJoinPoint.getSignature();
         if (!(signature instanceof MethodSignature)) {
-            throw new IllegalArgumentException("the Annotation @IpLimter must used on method!");
+            throw new IllegalArgumentException("改注解只能使用在方法上");
         }
         // 获取注解参数
         // 限流模块IP
-        String limitIp = ipLimiter.ip();
-        Preconditions.checkNotNull(limitIp);
+//        String limitIp = ipLimiter.ip();
+        InetAddress localhost = InetAddress.getLocalHost();
+        String limitIP = localhost.getHostAddress();
+        Preconditions.checkNotNull(limitIP);
         // 限流阈值
         long limitCount = ipLimiter.limitCount();
         // 限流超时时间
@@ -57,7 +61,7 @@ public class IpLimiterHandler {
         Long result = stringRedisTemplate
                 .execute(
                         redisScript,
-                        Collections.singletonList(limitIp),
+                        Collections.singletonList(limitIP),
                         Long.toString(expireTime),
                         Long.toString(limitCount)
                 );

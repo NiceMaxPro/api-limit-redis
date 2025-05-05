@@ -57,7 +57,6 @@ public class IpLimiterHandler {
         // 限流提示语
         String message = ipLimiter.message();
         // 执行lua脚本
-        // 执行lua脚本
         Long result = stringRedisTemplate
                 .execute(
                         redisScript,
